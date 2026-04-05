@@ -51,16 +51,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/pricing" className="hover:text-white transition">
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a href="/pricing" className="hover:text-white transition">
-                  Custom Domains
-                </a>
-              </li>
-              <li>
                 <a href="/dashboard" className="hover:text-white transition">
                   Analytics
                 </a>

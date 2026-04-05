@@ -37,7 +37,7 @@ export default function Body() {
   ];
 
   return (
-    <section className="relative min-h-screen bg-black text-white flex items-center justify-center px-6 py-24 font-[Inter]">
+    <section id="features" className="relative min-h-screen bg-black text-white flex items-center justify-center px-6 py-24 font-[Inter]">
       <div className="max-w-7xl w-full">
         {/* Heading */}
         <div

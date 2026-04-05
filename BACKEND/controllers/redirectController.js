@@ -60,6 +60,15 @@ exports.handleRedirect = async (req, res) => {
     await analytics.save();
     await link.save();
 
+    // Check for Ad Settings
+    const Settings = require("../models/Settings");
+    const settings = await Settings.findOne();
+    const frontendUrl = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
+    if (settings && settings.adPagesCount > 0) {
+      return res.redirect(`${frontendUrl}/ad/${slug}?p=1`);
+    }
+
     return res.redirect(link.originalUrl);
   } catch (err) {
     console.error("Redirect analytics error:", err);

@@ -36,9 +36,29 @@ const authLimiter = rateLimit({
 app.use("/api/auth", authLimiter, require("./routes/auth"));
 app.use("/api/links", require("./routes/links"));
 app.use("/api/analytics", require("./routes/analytics"));
+app.use("/api/settings", require("./routes/settings"));
+
 app.get("/expired", (req, res) => {
   res.status(410).send("This link has expired.");
 });
+
+// Dynamic Root File Serving (e.g. for ad verification)
+const Settings = require("./models/Settings");
+app.get("/:filename", async (req, res, next) => {
+  try {
+    const { filename } = req.params;
+    // skip if it's the slug route (handled later or by specific patterns)
+    // but settings check is priority if filename matches exactly
+    const settings = await Settings.findOne();
+    if (settings && settings.rootFileName && settings.rootFileName === filename) {
+      return res.send(settings.rootFileContent);
+    }
+    next();
+  } catch (err) {
+    next();
+  }
+});
+
 app.use("/", require("./routes/redirectNew"));
 
 // health

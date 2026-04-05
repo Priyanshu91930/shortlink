@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
+const { authMiddleware: auth } = require("../middleware/authMiddleware");
 const controller = require("../controllers/linkController");
+
+// Public route to get destination by slug
+router.get("/slug/:slug", controller.getLinkBySlug);
 
 // must be logged in
 router.use(auth);

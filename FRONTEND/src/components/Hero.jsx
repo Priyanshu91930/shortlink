@@ -1,8 +1,11 @@
 import { ArrowRight, Link as LinkIcon, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../constants";
 
 export default function Hero() {
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Delay trigger for sequential animation
@@ -98,6 +101,7 @@ export default function Hero() {
         >
           {/* Primary Button */}
           <button
+            onClick={() => navigate(ROUTES.DASHBOARD)}
             className="
               inline-flex items-center gap-2 px-6 py-3 rounded-xl 
               bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium
@@ -110,6 +114,7 @@ export default function Hero() {
 
           {/* Secondary Button */}
           <button
+            onClick={() => document.getElementById("features").scrollIntoView({ behavior: "smooth" })}
             className="
               inline-flex items-center gap-2 px-6 py-3 rounded-xl 
               bg-neutral-800/50 border border-stone-800 

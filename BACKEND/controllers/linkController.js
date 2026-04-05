@@ -173,3 +173,17 @@ exports.getSingleLink = async (req, res) => {
     res.status(500).json({ errors: ["Server error"] });
   }
 };
+
+// GET destination URL by slug (Public)
+exports.getLinkBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const link = await Link.findOne({ slug });
+    if (!link) return res.status(404).json({ errors: ["Link not found"] });
+
+    res.json({ originalUrl: link.originalUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: ["Server error"] });
+  }
+};

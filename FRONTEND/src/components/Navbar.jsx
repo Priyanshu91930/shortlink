@@ -1,12 +1,16 @@
 import { User, Menu, X, LayoutDashboard, LogIn, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../constants";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [animateWords, setAnimateWords] = useState(false);
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const isLoggedIn = isAuthenticated;
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimateWords(true), 100);
@@ -25,7 +29,10 @@ export default function Navbar() {
     >
       <div className="flex items-center justify-between gap-6">
         {/* Logo */}
-        <div className="flex items-center select-none">
+        <div 
+          onClick={() => navigate(ROUTES.HOME)}
+          className="flex items-center select-none cursor-pointer hover:opacity-80 transition-opacity"
+        >
           <div className="w-5 h-5 rounded-full border border-white/40 flex items-center justify-center">
             <span className="w-2 h-2 rounded-full bg-white"></span>
           </div>
@@ -60,9 +67,6 @@ export default function Navbar() {
           <a href="/" className="hover:text-white transition">
             Home
           </a>
-          <a href="/pricing" className="hover:text-white transition">
-            Pricing
-          </a>
           <a href="/contact" className="hover:text-white transition">
             Contact
           </a>
@@ -74,6 +78,16 @@ export default function Navbar() {
             >
               <LayoutDashboard className="w-3 h-3" />
               Dashboard
+            </a>
+          )}
+
+          {isAdmin && (
+            <a
+              href="/admin/settings"
+              className="hover:text-white transition flex items-center gap-1 text-emerald-400 font-bold border border-emerald-500/30 bg-emerald-500/5 px-3 py-1 rounded-full"
+            >
+              <LayoutDashboard className="w-3 h-3" />
+              Admin Panel
             </a>
           )}
         </div>
@@ -136,12 +150,6 @@ export default function Navbar() {
             Home
           </a>
           <a
-            href="/pricing"
-            className="block text-sm text-gray-300 hover:text-white"
-          >
-            Pricing
-          </a>
-          <a
             href="/contact"
             className="block text-sm text-gray-300 hover:text-white"
           >
@@ -154,6 +162,15 @@ export default function Navbar() {
               className="block text-sm text-gray-300 hover:text-white"
             >
               Dashboard
+            </a>
+          )}
+
+          {isAdmin && (
+            <a
+              href="/admin/settings"
+              className="block text-sm text-blue-400 hover:text-blue-300"
+            >
+              Admin Settings
             </a>
           )}
 

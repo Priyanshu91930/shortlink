@@ -237,18 +237,18 @@ const AccountPage = () => {
               </button>
 
               <button
-                onClick={() => navigate("/pricing")}
+                onClick={() => navigate("/contact")}
                 className="
                   p-5 rounded-2xl bg-white/[0.02] border border-stone-800 
                   hover:bg-white/5 hover:border-blue-500/30 hover:scale-[1.02]
                   transition-all duration-200 text-left
                 "
               >
-                <Calendar className="w-6 h-6 text-blue-400 mb-3" />
+                <Mail className="w-6 h-6 text-blue-400 mb-3" />
                 <h4 className="font-[Open Sans] font-semibold mb-1">
-                  Upgrade Plan
+                  Contact Support
                 </h4>
-                <p className="text-sm text-gray-400">Get more features</p>
+                <p className="text-sm text-gray-400">Get help with your account</p>
               </button>
             </div>
           </div>
