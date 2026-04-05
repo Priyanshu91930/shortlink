@@ -16,17 +16,27 @@ const AdInterstitialPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Inject User Provided Ad Script
+    const script = document.createElement("script");
+    script.src = "https://quge5.com/88/tag.min.js";
+    script.setAttribute("data-zone", "226622");
+    script.async = true;
+    script.setAttribute("data-cfasync", "false");
+    document.head.appendChild(script);
+
     const fetchData = async () => {
       try {
         const s = await settingsService.getSettings();
         setSettings(s);
         setTimeLeft(s.adTimer || 10);
 
-        // Inject Ad Script
+        // Inject Dynamic Ad Script from Settings if exists
         if (s.adScript) {
-          const script = document.createElement("script");
-          script.innerHTML = s.adScript;
-          document.head.appendChild(script);
+          const dynamicScript = document.createElement("script");
+          // If it's a full tag, we might need a different injection method,
+          // but for now, we'll keep the existing logic or improve it.
+          dynamicScript.innerHTML = s.adScript;
+          document.head.appendChild(dynamicScript);
         }
       } catch (err) {
         setError("Failed to load settings");
@@ -35,6 +45,12 @@ const AdInterstitialPage = () => {
       }
     };
     fetchData();
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
   }, []);
 
   useEffect(() => {
