@@ -23,7 +23,15 @@ app.use(cookieParser());
 // CORS - allow frontend to send cookies: credentials required
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      const allowed = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+      // Allow if origin matches CLIENT_ORIGIN (exactly) or is localhost in development
+      if (!origin || origin === allowed || (process.env.NODE_ENV !== "production" && origin.includes("localhost"))) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

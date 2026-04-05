@@ -29,8 +29,9 @@ function getCookieOptions() {
   const isProd = process.env.NODE_ENV === "production";
   return {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true" || isProd,
-    sameSite: process.env.COOKIE_SAMESITE || (isProd ? "none" : "lax"),
+    // SameSite: None REQUIRES Secure: true.
+    secure: isProd || process.env.COOKIE_SECURE === "true",
+    sameSite: isProd ? "none" : "lax",
     maxAge: getCookieMaxAge(),
   };
 }
