@@ -9,6 +9,9 @@ const connectDB = require("./config/db");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Vercel/Proxy for rate limiting
+app.set("trust proxy", 1);
+
 // connect DB
 connectDB(process.env.MONGO_URI);
 
