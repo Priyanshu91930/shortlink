@@ -26,10 +26,11 @@ function getCookieMaxAge() {
  * Get cookie options for JWT
  */
 function getCookieOptions() {
+  const isProd = process.env.NODE_ENV === "production";
   return {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: process.env.COOKIE_SAMESITE || "lax",
+    secure: process.env.COOKIE_SECURE === "true" || isProd,
+    sameSite: process.env.COOKIE_SAMESITE || (isProd ? "none" : "lax"),
     maxAge: getCookieMaxAge(),
   };
 }
@@ -45,11 +46,9 @@ function setAuthCookie(res, token) {
  * Clear authentication cookie
  */
 function clearAuthCookie(res) {
-  res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: process.env.COOKIE_SAMESITE || "lax",
-  });
+  const options = getCookieOptions();
+  delete options.maxAge; // No need for maxAge on clearing
+  res.clearCookie(COOKIE_NAME, options);
 }
 
 /**
