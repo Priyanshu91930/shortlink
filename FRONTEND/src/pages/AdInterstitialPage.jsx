@@ -40,17 +40,21 @@ const AdInterstitialPage = () => {
 
     const fetchData = async () => {
       try {
+        console.log("Fetching settings...");
         const s = await settingsService.getSettings();
+        console.log("Settings loaded:", s);
         setSettings(s);
-        setTimeLeft(s.adTimer || 10);
+        setTimeLeft(s?.adTimer || 10);
 
-        if (s.adScript) {
+        if (s?.adScript) {
+          console.log("Injecting dynamic ad script...");
           const dynamicScript = document.createElement("script");
           dynamicScript.innerHTML = s.adScript;
           document.head.appendChild(dynamicScript);
         }
       } catch (err) {
-        setError("Failed to load settings");
+        console.error("Failed to fetch settings:", err);
+        setError("Failed to load settings. Please check your API connection.");
       } finally {
         setLoading(false);
       }
@@ -78,19 +82,31 @@ const AdInterstitialPage = () => {
   }, [loading, error, timeLeft]);
 
   const handleContinue = async () => {
-    if (pageIndex < settings.adPagesCount) {
-      window.location.href = `/ad/${slug}?p=${pageIndex + 1}`;
+    console.log("Handle continue clicked. Slug:", slug);
+    if (settings && pageIndex < settings.adPagesCount) {
+      const nextUrl = `/ad/${slug}?p=${pageIndex + 1}`;
+      console.log("Redirecting to next ad page:", nextUrl);
+      window.location.href = nextUrl;
     } else {
       try {
+        console.log("Fetching original URL from API...");
         const res = await api.get(`/links/slug/${slug}`);
-        window.location.href = res.data.originalUrl;
+        console.log("API Response:", res.data);
+        if (res.data && res.data.originalUrl) {
+          console.log("Redirecting to destination:", res.data.originalUrl);
+          window.location.href = res.data.originalUrl;
+        } else {
+          throw new Error("Invalid response structure from API");
+        }
       } catch (err) {
-        setError("Destination link not found");
+        console.error("Redirection error:", err);
+        setError("Destination link not found or API is unavailable.");
       }
     }
   };
 
   const handleSmartlinkClick = () => {
+    console.log("Smartlink clicked.");
     window.open("https://pantomimemailman.com/uup5m3s20e?key=1a79220bfe4ecc934ef8323e13fe9331", "_blank");
   };
 
