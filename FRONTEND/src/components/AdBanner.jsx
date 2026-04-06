@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const AdBanner = ({ id, width, height, format = 'iframe' }) => {
+const AdBanner = ({ id, width, height, format = 'iframe', className = "" }) => {
   const adRef = useRef(null);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const AdBanner = ({ id, width, height, format = 'iframe' }) => {
 
   return (
     <div 
-      className="flex justify-center items-center my-4 overflow-hidden" 
+      className={`flex justify-center items-center my-4 overflow-hidden ${className}`} 
       ref={adRef} 
       style={{ minHeight: height, minWidth: width }}
     />
