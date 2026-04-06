@@ -6,6 +6,18 @@ const User = require("../models/User");
 
 const authMiddleware = async (req, res, next) => {
   try {
+    // Check for API Key first (for bots/external integrations)
+    const apiKey = req.headers["x-api-key"];
+    if (apiKey) {
+      const user = await User.findOne({ apiKey });
+      if (user) {
+        req.userId = user._id;
+        return next();
+      }
+      return res.status(401).json({ errors: ["Invalid API Key"] });
+    }
+
+    // Fallback to cookie authentication
     const token = req.cookies?.[COOKIE_NAME];
     if (!token) return res.status(401).json({ errors: ["Not authenticated"] });
 

@@ -48,6 +48,7 @@ app.use("/api/auth", authLimiter, require("./routes/auth"));
 app.use("/api/links", require("./routes/links"));
 app.use("/api/analytics", require("./routes/analytics"));
 app.use("/api/settings", require("./routes/settings"));
+app.use("/api/user", require("./routes/user"));
 
 app.get("/expired", (req, res) => {
   res.status(410).send("This link has expired.");

@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    apiKey: { type: String, unique: true, sparse: true },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
