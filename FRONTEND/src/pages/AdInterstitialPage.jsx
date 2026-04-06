@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import settingsService from "../services/settingsService";
 import api from "../services/api";
+import AdBanner from "../components/AdBanner";
+import NativeAd from "../components/NativeAd";
 
 const AdInterstitialPage = () => {
   const { slug } = useParams();
@@ -16,7 +18,19 @@ const AdInterstitialPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Inject User Provided Ad Script
+    // Inject Popunder script
+    const popunderScript = document.createElement("script");
+    popunderScript.src = "https://pantomimemailman.com/5a/e3/cc/5ae3cc847bff081fa121b9d7f91b79f7.js";
+    popunderScript.async = true;
+    document.head.appendChild(popunderScript);
+
+    // Inject Social Bar script
+    const socialBarScript = document.createElement("script");
+    socialBarScript.src = "https://pantomimemailman.com/51/cc/95/51cc9541a8b11a127d4ecc3130b4b0dd.js";
+    socialBarScript.async = true;
+    document.body.appendChild(socialBarScript);
+
+    // Monetag Monetization Script
     const script = document.createElement("script");
     script.src = "https://quge5.com/88/tag.min.js";
     script.setAttribute("data-zone", "226622");
@@ -30,11 +44,8 @@ const AdInterstitialPage = () => {
         setSettings(s);
         setTimeLeft(s.adTimer || 10);
 
-        // Inject Dynamic Ad Script from Settings if exists
         if (s.adScript) {
           const dynamicScript = document.createElement("script");
-          // If it's a full tag, we might need a different injection method,
-          // but for now, we'll keep the existing logic or improve it.
           dynamicScript.innerHTML = s.adScript;
           document.head.appendChild(dynamicScript);
         }
@@ -47,9 +58,9 @@ const AdInterstitialPage = () => {
     fetchData();
 
     return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
+      if (document.head.contains(popunderScript)) document.head.removeChild(popunderScript);
+      if (document.body.contains(socialBarScript)) document.body.removeChild(socialBarScript);
+      if (document.head.contains(script)) document.head.removeChild(script);
     };
   }, []);
 
@@ -68,10 +79,8 @@ const AdInterstitialPage = () => {
 
   const handleContinue = async () => {
     if (pageIndex < settings.adPagesCount) {
-      // Go to next ad page
       window.location.href = `/ad/${slug}?p=${pageIndex + 1}`;
     } else {
-      // Final destination
       try {
         const res = await api.get(`/links/slug/${slug}`);
         window.location.href = res.data.originalUrl;
@@ -79,6 +88,10 @@ const AdInterstitialPage = () => {
         setError("Destination link not found");
       }
     }
+  };
+
+  const handleSmartlinkClick = () => {
+    window.open("https://pantomimemailman.com/uup5m3s20e?key=1a79220bfe4ecc934ef8323e13fe9331", "_blank");
   };
 
   if (loading) return (
@@ -97,7 +110,12 @@ const AdInterstitialPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col items-center p-4">
+      {/* Top Ledgerboard Ad */}
+      <div className="w-full max-w-4xl pt-8 pb-4 flex justify-center">
+        <AdBanner id="c0cf3af0e98a7c8c1ca0ccce1dfd3f9b" width={728} height={90} />
+      </div>
+
       <div className="max-w-md w-full bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700 shadow-2xl text-center">
         <div className="mb-6">
           <div className="inline-block p-3 rounded-full bg-blue-500/10 border border-blue-500/20 mb-4">
@@ -112,6 +130,9 @@ const AdInterstitialPage = () => {
             Step {pageIndex} of {settings.adPagesCount}
           </p>
         </div>
+
+        {/* Medium Rectangle Ad */}
+        <AdBanner id="c0db5ed1b035f4273a3264f19bcba464" width={300} height={250} />
 
         <div className="my-10 flex flex-col items-center">
           {!canContinue ? (
@@ -143,12 +164,20 @@ const AdInterstitialPage = () => {
               </div>
             </div>
           ) : (
-            <div className="w-full animate-bounce">
+            <div className="w-full space-y-4">
               <button
                 onClick={handleContinue}
                 className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 Click to Continue
+              </button>
+              
+              {/* Specialized Smartlink button */}
+              <button
+                onClick={handleSmartlinkClick}
+                className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium rounded-xl border border-slate-600 transition-all text-sm animate-pulse"
+              >
+                Click to Continue (Special)
               </button>
             </div>
           )}
@@ -158,13 +187,19 @@ const AdInterstitialPage = () => {
           Advertisement
         </p>
         
-        {/* Ad Placeholder (Admin script will be injected above) */}
-        <div id="ad-container" className="mt-4 min-h-[200px] border border-dashed border-slate-700 rounded-lg flex items-center justify-center bg-slate-900/50">
-          <span className="text-slate-600 italic">Advertisement Content</span>
+        {/* Native Ad Banner */}
+        <div className="mt-4 border border-dashed border-slate-700 rounded-lg bg-slate-900/50 p-2">
+           <NativeAd id="aa1438decb39d7c83d497ac4459118f8" />
         </div>
+      </div>
+
+      {/* Bottom Ad */}
+      <div className="w-full max-w-4xl py-8 flex justify-center">
+        <AdBanner id="279ae18c7eae12288a2d3f4983d58272" width={468} height={60} />
       </div>
     </div>
   );
 };
 
 export default AdInterstitialPage;
+
